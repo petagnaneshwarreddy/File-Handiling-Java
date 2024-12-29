@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class RestApiClientSimple {
+
+    public static void main(String[] args) {
+        // Example API endpoint
+        String apiUrl = "https://jsonplaceholder.typicode.com/posts";
+
+        // Perform a GET request
+        performGetRequest(apiUrl);
+
+        // Perform a POST request
+        String jsonPayload = "{ \"title\": \"foo\", \"body\": \"bar\", \"userId\": 1 }";
+        performPostRequest(apiUrl, jsonPayload);
+    }
+
+    // Method to perform a GET request
+    private static void performGetRequest(String apiUrl) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            System.out.println("GET Response Code: " + responseCode);
+
+            // Read the response
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Print the response
+                System.out.println("Response: " + response.toString());
+            } else {
+                System.out.println("GET request failed");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to perform a POST request
+    private static void performPostRequest(String apiUrl, String jsonPayload) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setDoOutput(true);
+
+            // Write JSON payload
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonPayload.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            System.out.println("POST Response Code: " + responseCode);
+
+            // Read the response
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Print the response
+            System.out.println("Response: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+Class Man{
+    public static void main(String[] args) {
+        System.out.println(HI);
+    }
+}
